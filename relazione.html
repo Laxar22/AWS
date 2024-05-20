@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Relazione</title>
+    <style>
+        *,
+*::after,
+*::before {
+  box-sizing: border-box;
+  transform-style: preserve-3d;
+}
+
+body {
+  height: auto;
+  width: auto;
+  margin: 0;
+  background: radial-gradient(circle at 50% 50%, #305055 0%, #101720 100%);
+  overflow-y: scroll;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300;
+}
+
+.text {
+  margin-top: 7%;
+  margin-bottom: 3%;
+  margin-left: 20%;
+  margin-right: 20%;
+  position: relative;
+  align-items: center;
+  color: white;
+  background-color: #305055;
+  border-radius: 10px;
+  padding: 1%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.crt {
+  width: auto;
+  min-width: 35%;
+  height: auto;
+  min-height: 300px;
+  position: relative;
+  border: 20px solid #807760;
+  border-bottom-width: 25px;
+  box-shadow: 0 10px 15px #0007;
+  border-radius: 10px;
+  background: #001000;
+  font-family: 'Courier New', Courier, monospace;
+  padding: 20px;
+  color: #fff;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  display: flex;
+}
+
+@keyframes freq {
+  0% {
+    background-position: 0px 0px;
+  }
+  100% {
+    background-position: 0px 10px;
+  }
+}
+
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+#powerBtn {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(to bottom, #ffffff55 0px, #ffffff22 3px, #ffffff00 10px, #ffffff00 50px, #00000000 50px, #00000033 60px);
+  box-shadow: 0 2px 1px 2px #00000033;
+  position: relative;
+  top: -60px;
+  left: 290px;
+  line-height: 60px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: #807760;
+  opacity: 1;
+  text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5), 0 -1px 1px rgba(0, 0, 0, 0.5);
+}
+
+/* New styles for login form */
+.login-container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  margin-top: 20px;
+}
+
+.login-container h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+    </style>
+</head>
+
+<body>
+    <div class="text">
+        Per prima cosa aggiorniamo il sistema e installiamo docker
+    </div>
+
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~$ sudo apt update<br />
+        ubuntu@ip-172-31-27-235:~$ sudo apt upgrade<br />
+        ubuntu@ip-172-31-27-235:~$ sudo apt install docker.io<br />
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        Ora creiamo una per il progetto, ed al suo interno creiamo una sottocartella chiamata certs.
+        Subito dopo andiamo a creare i certificati con il comando apposta
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~$ mkdir progetto<br />
+        ubuntu@ip-172-31-27-235:~$ cd progetto<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ mkdir certs<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout
+        certs/key.pem -out certs/cert.pem<br />
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        Ora creiamo la cartella di configurazione ed il file httpd.conf
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ mkdir config<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ cd config<br />
+        ubuntu@ip-172-31-27-235:~/progetto/config$ touch httpd.conf<br />
+        ubuntu@ip-172-31-27-235:~/progetto/config$ nano httpd.conf<br />
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        All'interno di httpd.conf mettiamo le regole per le porte, in particolare per impedire il traffico sulla porta
+        di http
+    </div>
+    <div class="crt">
+        &lt;VirtualHost *:80&gt;<br>
+        &nbsp;&nbsp;&lt;RewriteEngine On&gt;<br>
+        &nbsp;&nbsp;&lt;RewriteCond %{HTTPS} off&gt;<br>
+        &nbsp;&nbsp;&lt;RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI}&gt;<br>
+        &lt;/VirtualHost&gt;<br>
+        &lt;VirtualHost *:443&gt;<br>
+        &nbsp;&nbsp;DocumentRoot "/var/www/html"<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SSLEngine on<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateFile /certs/cert.pem<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;SSLCertificateKeyFile /certs/key.pem<br>
+        &lt;/VirtualHost&gt;
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        Ora è il momento di caricare il sito, creiamo una sottocartella chiamata src, la colleghiamo a git e facciamo il
+        pull
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ mkdir src<br />
+        ubuntu@ip-172-31-27-235:~/progetto/src$ git clone https://github.com/Laxar22/aws.git .<br />
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        Ora abbiamo tutto il necessario per creare il Dockerfile, creiamo il dockerfile e all'interno scriviamo questo
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ touch Dockerfile<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ nano Dockerfiel<br />
+        <span class="blink">_</span>
+    </div>
+
+    <div class="crt">
+        FROM php:7.2-apache<br />
+        COPY src/ /var/www/html/<br />
+        COPY config/httpd.conf /etc/apache2/sites-available/000-default.conf<br />
+        COPY certs/* /certs/<br />
+        RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli<br />
+        RUN a2enmod ssl && a2enmod rewrite<br />
+        EXPOSE 80<br />
+        EXPOSE 443
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        Adesso buildiamo il file e runniamo il container
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker build . -t boh:1.0<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker run -p 80:80 -p 443:443 boh:1.0<br />
+        <span class="blink">_</span>
+    </div>
+
+    <div class="text">
+        Ora dobbiamo creare il database, ci affideremo all'immagine di mariaDB e prima bisogna creare il volume
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker volume create volumeDB<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker pull mariadb<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker run --detach --name database --env MARIADB_ROOT_PASSWORD=root -v
+        volumeDB:/var/lib/mysql -p 3306:3306 mariadb<br />
+        <span class="blink">_</span>
+    </div>
+
+
+    <div class="text">
+        Adesso che abbiamo entrambi i container dobbiamo creare un network e aggiungerli ad esso
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker network create net<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker network connect net (nome container apache)<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo docker network connect net database<br />
+        <span class="blink">_</span>
+    </div>
+
+
+    <div class="text">
+        Ora Installiamo il client di mysql per avere accesso al database, poi creiamo il db la tabella e la popoliamo
+    </div>
+    <div class="crt">
+        ubuntu@ip-172-31-27-235:~/progetto$ sudo apt-get install mysql-client<br />
+        ubuntu@ip-172-31-27-235:~/progetto$ mysql -u root -p -h 127.0.0.1:3306<br />
+        mysql-> CREATE DATABASE aws;<br />
+        mysql-> USE aws;<br />
+        mysql-> CREATE TABEL utenti(<br />
+        &nbsp; id INT AUTO_INCREMENT PRIMARY KEY,<br />
+        &nbsp; username VARCHAR(50),<br />
+        &nbsp; password VARCHAR(50)<br />
+        );<br />
+        mysql-> INSERT INTO utenti (username, password) VALUES (riccardo_andronaco, passowrd in md5),
+        (ignazio_mistretta, password in md5);
+        <span class="blink">_</span>
+    </div>
+</body>
+</html>
